@@ -8,13 +8,7 @@ use base qw( Catalyst::View );
 
 Catalyst::View::Download::Plain
 
-=head1 VERSION
-
-Version 0.01
-
 =cut
-
-our $VERSION = '0.01';
 
 __PACKAGE__->config(
 	'stash_key' => 'plain'
@@ -43,6 +37,9 @@ sub render {
 	
   return $content;
 }
+
+1;
+__END__
 
 =head1 SYNOPSIS
 
@@ -109,5 +106,3 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
-
-1; # End of Catalyst::View::Download::Plain

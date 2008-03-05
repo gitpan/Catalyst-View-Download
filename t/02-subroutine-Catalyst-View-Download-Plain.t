@@ -1,14 +1,10 @@
-#!perl
-
 use Test::More tests => 1;
 
 use FindBin;
-use lib "$FindBin::Bin/Testing";
+use lib $FindBin::Bin."/Testing";
 use Catalyst::Test 'TestApp';
 
 sub render_ok {
-  my ($data) = @_;
-
   return get('/plain_test');
 }
 
@@ -21,7 +17,7 @@ Curabitur lacinia laoreet felis. Vivamus a urna. Aenean adipiscing aliquam velit
 Proin scelerisque, lacus blandit consequat sodales, augue ligula laoreet quam, condimentum pretium velit diam eget lorem. Suspendisse potenti. Nam rhoncus mi vitae tortor. Sed eget neque. Fusce sagittis. Nulla rutrum nibh et justo. Suspendisse dolor libero, rhoncus a, pretium id, feugiat eget, velit. Aenean accumsan. Nunc vel nulla. Mauris semper consectetuer velit. Vivamus semper. Nulla fermentum sapien nec felis. Aenean iaculis felis nec ipsum. Aliquam tristique. Nam ut quam. Suspendisse ornare tristique arcu. Morbi pellentesque dolor eget lorem. Morbi ac nunc euismod lorem porttitor hendrerit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
 TEXT
 
-  is(render_ok($data->{'array'}),$compare,'Compare Plaint output'); 
+  is(render_ok(),$compare,'Compare Plaint output'); 
 }
 
 diag( "Testing subroutine, render, for Catalyst::View::Download::Plain" );

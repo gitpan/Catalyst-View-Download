@@ -1,14 +1,10 @@
-#!perl
-
 use Test::More tests => 1;
 
 use FindBin;
-use lib "$FindBin::Bin/Testing";
+use lib $FindBin::Bin."/Testing";
 use Catalyst::Test 'TestApp';
 
 sub render_ok {
-  my ($data) = @_;
-
   return get('/csv_test');
 }
 
@@ -18,7 +14,7 @@ BEGIN: {
                ."\" \",\"\n\",\"\t\",!\n"
                ."\@,\",\",\"\"\"\",'\n";
 
-  is(render_ok($data->{'array'}),$compare,'Compare CSV output'); 
+  is(render_ok(),$compare,'Compare CSV output'); 
 }
 
 diag( "Testing subroutine, render, for Catalyst::View::Download::CSV" );

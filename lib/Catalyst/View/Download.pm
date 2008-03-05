@@ -10,11 +10,11 @@ Catalyst::View::Download
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 __PACKAGE__->config(
 	'default' => 'text/plain',
@@ -62,6 +62,9 @@ sub render {
 	
 	return $content;
 }
+
+1;
+__END__
 
 =head1 SYNOPSIS
 
@@ -251,5 +254,3 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
-
-1; # End of Catalyst::View::Download

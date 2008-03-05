@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Catalyst-View-Download
-version:             0.01
+version:             0.02
 abstract:            ~
 license:             ~
 author:              
@@ -8,7 +8,10 @@ author:
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
+    Catalyst::Engine::Test:        0
     Catalyst::Runtime:             0
+    Catalyst::Test:                0
+    FindBin:                       0
     Test::More:                    0
     Text::CSV:                     0
 meta-spec:

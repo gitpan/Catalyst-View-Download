@@ -11,13 +11,7 @@ use Text::CSV;
 
 Catalyst::View::Download::CSV
 
-=head1 VERSION
-
-Version 0.01
-
 =cut
-
-our $VERSION = '0.01';
 
 __PACKAGE__->config(
 	'stash_key' => 'csv',
@@ -78,6 +72,9 @@ sub render {
 
   return $content;
 }
+
+1;
+__END__
 
 =head1 SYNOPSIS
 
@@ -221,5 +218,3 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
-
-1; # End of Catalyst::View::Download::CSV
