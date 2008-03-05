@@ -1,0 +1,23 @@
+Changes
+lib/Catalyst/View/Download.pm
+lib/Catalyst/View/Download/CSV.pm
+lib/Catalyst/View/Download/Plain.pm
+lib/Catalyst/View/pod2htmd.tmp
+lib/Catalyst/View/pod2htmi.tmp
+lib/Catalyst/View/test.html
+Makefile.PL
+MANIFEST
+README
+t/00-load.t
+t/01-load-Catalyst-View-Download-CSV.t
+t/01-load-Catalyst-View-Download-Plain.t
+t/02-subroutine-Catalyst-View-Download-CSV.t
+t/02-subroutine-Catalyst-View-Download-Plain.t
+t/boilerplate.t
+t/pod-coverage.t
+t/pod.t
+t/Testing/TestApp.pm
+t/Testing/TestApp/View/Download.pm
+t/Testing/TestApp/View/Download/CSV.pm
+t/Testing/TestApp/View/Download/Plain.pm
+META.yml                                 Module meta-data (added by MakeMaker)
