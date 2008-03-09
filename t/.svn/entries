@@ -1,0 +1,58 @@
+8
+
+dir
+12
+svn+ssh://travis@socrates/pub/svn/cpan/Catalyst-View-Download/trunk/t
+svn+ssh://travis@socrates/pub/svn/cpan/Catalyst-View-Download
+
+
+
+2008-03-09T01:19:49.528681Z
+10
+travis
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+07772975-a647-0410-a410-f2e8e3ad88e5
+
+author
+dir
+
+lib
+dir
+
+01-live-test.t
+file
+
+
+
+
+2008-03-07T14:42:49.000000Z
+ea61d5c464243e454e92711d52fd2b75
+2008-03-07T15:24:06.786003Z
+7
+travis
+
+00-load.t
+file
+
+
+
+
+2008-03-07T14:29:47.000000Z
+1443a1d65d9088f9d5af6c0a026c186e
+2008-03-07T15:23:02.142754Z
+6
+travis
+

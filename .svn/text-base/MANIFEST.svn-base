@@ -33,8 +33,11 @@ lib/Catalyst/View/Download/.svn/text-base/CSV.pm.svn-base
 lib/Catalyst/View/Download/.svn/text-base/Plain.pm.svn-base
 lib/Catalyst/View/Download/CSV.pm
 lib/Catalyst/View/Download/Plain.pm
+lib/Catalyst/View/pod2htmd.tmp
+lib/Catalyst/View/pod2htmi.tmp
+lib/Catalyst/View/test.html
 Makefile.PL
-MANIFEST			This list of files
+MANIFEST
 MANIFEST.SKIP
 META.yml
 README
@@ -44,12 +47,17 @@ t/.svn/text-base/00-load.t.svn-base
 t/.svn/text-base/01-live-test.t.svn-base
 t/00-load.t
 t/01-live-test.t
+t/01-load-Catalyst-View-Download-CSV.t
+t/01-load-Catalyst-View-Download-Plain.t
+t/02-subroutine-Catalyst-View-Download-CSV.t
+t/02-subroutine-Catalyst-View-Download-Plain.t
 t/author/.svn/entries
 t/author/.svn/format
 t/author/.svn/text-base/pod-coverage.t.svn-base
 t/author/.svn/text-base/pod.t.svn-base
 t/author/pod-coverage.t
 t/author/pod.t
+t/boilerplate.t
 t/lib/.svn/entries
 t/lib/.svn/format
 t/lib/.svn/text-base/Makefile.PL.svn-base
@@ -78,3 +86,9 @@ t/lib/TestApp/View/Download/.svn/text-base/CSV.pm.svn-base
 t/lib/TestApp/View/Download/.svn/text-base/Plain.pm.svn-base
 t/lib/TestApp/View/Download/CSV.pm
 t/lib/TestApp/View/Download/Plain.pm
+t/pod-coverage.t
+t/pod.t
+t/Testing/TestApp.pm
+t/Testing/TestApp/View/Download.pm
+t/Testing/TestApp/View/Download/CSV.pm
+t/Testing/TestApp/View/Download/Plain.pm
