@@ -10,11 +10,11 @@ Catalyst::View::Download
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 __PACKAGE__->config(
 	'stash_key' => 'download',
@@ -23,6 +23,10 @@ __PACKAGE__->config(
 		'text/csv' => {
 			'outfile'	=> 'data.csv',
 			'module' => '+Download::CSV',
+		},
+		'text/html' => {
+			'outfile' => 'data.html',
+			'module' => '+Download::HTML',
 		},
 		'text/plain' => {
 			'outfile' => 'data.txt',
@@ -78,7 +82,7 @@ __END__
 	sub example_action_1 : Local {
 		my ($self, $c) = @_;
 
-		my $content_type = $c->request->params->{'content_type'} || 'plain'; # 'plain' or 'csv'
+		my $content_type = $c->request->params->{'content_type'} || 'plain'; # 'plain', 'csv' or 'html'
 
 		$c->header('Content-Type' => 'text/'.$content_type); # Set the content type so Catalyst::View::Download can determine how to process it.
     $c->stash->{'download'} = 'text/'.$content_type; # Or set the content type in the stash variable 'download' (note this is configurable) to process it.
@@ -96,10 +100,19 @@ __END__
       data => $data
     };
 
-		# For plain text in this example we just dump the example array
-		# Catalyst::View::Download::Plain will use either the 'plain' stash key or just pull from $c->response->body
 		use Data::Dumper;
-		$c->response->body( Dumper( $data ) )
+
+		# For html text in this example we just dump the example array in a basic html document
+		# Catalyst::View::Download::HTML can use either the 'html' stash key or just pull from $c->response->body
+    $c->stash->{'html'} = {
+        data => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head><title></title></head><body>'.Dumper( $data ).'</body></html>';
+    };
+    
+		# For plain text in this example we just dump the example array
+		# Catalyst::View::Download::Plain can use either the 'plain' stash key or just pull from $c->response->body
+    $c->stash->{'plain'} = {
+      data => Dumper( $data )
+    };
 
 		# Finally forward processing to the Download View
 		$c->forward('MyApp::View::Download');
@@ -189,15 +202,26 @@ Catalyst::View::Download has the following default configuration for this Conten
 
 See L<Catalyst::View::Download::CSV> for more details.
 
+=head2 text/html
+
+Catalyst::View::Download has the following default configuration for this Content-Type
+
+  $c->view('MyApp::View::Download')->config->{'content_type'}{'text/html'} = {
+    'outfile' => 'data.html',
+    'module' => '+Download::HTML'
+  };
+  
+See L<Catalyst::View::Download::HTML> for more details.
+
 =head2 text/plain
 
 Catalyst::View::Download has the following default configuration for this Content-Type
 
 	$c->view('MyApp::View::Download')->config->{'default'} = 'text/plain';
 
-	$c->view('MyApp::View::Download')->config->{'content_type'}{'text/csv'} = {
-		'outfile' => 'data.csv',
-		'module' => '+Download::CSV'
+	$c->view('MyApp::View::Download')->config->{'content_type'}{'text/plain'} = {
+		'outfile' => 'data.txt',
+		'module' => '+Download::Plain'
 	};
 	
 See L<Catalyst::View::Download::Plain> for more details.

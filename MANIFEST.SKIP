@@ -1,4 +1,5 @@
 .git/
+.svn/
 blib
 pm_to_blib
 MANIFEST.bak

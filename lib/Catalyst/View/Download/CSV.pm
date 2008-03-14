@@ -5,7 +5,6 @@ use warnings;
 use base qw( Catalyst::View );
 
 use Catalyst::Exception;
-use Params::Validate;
 use Text::CSV;
 
 =head1 NAME

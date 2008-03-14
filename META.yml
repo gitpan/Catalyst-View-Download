@@ -1,8 +1,8 @@
---- 
+---
 abstract: ~
-author: 
-  - Travis Chase, C<< <gaudeon at cpan.org> >>
-build_requires: 
+author:
+  - 'Travis Chase, C<< <gaudeon at cpan.org> >>'
+build_requires:
   Catalyst::Runtime: 0
   FindBin: 0
   Test::More: 0
@@ -12,12 +12,12 @@ build_requires:
 distribution_type: module
 generated_by: Module::Install version 0.68
 license: perl
-meta-spec: 
+meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.3.html
   version: 1.3
 name: Catalyst-View-Download
-no_index: 
-  directory: 
+no_index:
+  directory:
     - inc
     - t
-version: 0.03
+version: 0.04

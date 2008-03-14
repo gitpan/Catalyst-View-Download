@@ -1,4 +1,4 @@
-package Catalyst::View::Download::Plain;
+package Catalyst::View::Download::HTML;
 
 use strict;
 use warnings;
@@ -6,12 +6,12 @@ use base qw( Catalyst::View );
 
 =head1 NAME
 
-Catalyst::View::Download::Plain
+Catalyst::View::Download::HTML
 
 =cut
 
 __PACKAGE__->config(
-	'stash_key' => 'plain'
+	'stash_key' => 'html'
 );
 
 sub process {
@@ -21,7 +21,7 @@ sub process {
   my $template = $c->stash->{template};
   my $content = $self->render($c, $template, $c->stash);
 
-  $c->res->headers->header("Content-Type" => "text/plain") if($c->res->headers->header("Content-Type") eq "");
+  $c->res->headers->header("Content-Type" => "text/html") if($c->res->headers->header("Content-Type") eq "");
   $c->res->body( $content );
 }
 
@@ -43,9 +43,9 @@ __END__
 
 =head1 SYNOPSIS
 
-  # lib/MyApp/View/Download/Plain.pm
-  package MyApp::View::Download::Plain;
-  use base qw( Catalyst::View::Download::Plain );
+  # lib/MyApp/View/Download/HTML.pm
+  package MyApp::View::Download::HTML;
+  use base qw( Catalyst::View::Download::HTML );
   1;
 
   # lib/MyApp/Controller/SomeController.pm
@@ -54,21 +54,21 @@ __END__
 		
 		my $content = "Some Text";
   
-    # To output your data just pass your content into the 'plain' key of the stash
-    $c->stash->{'plain'} = {
+    # To output your data just pass your content into the 'html' key of the stash
+    $c->stash->{'html'} = {
 			data => $content
 		};
 		
 		# Or into the body of the response for this action
 		$c->response->body($content);
 
-    # Finally forward processing to the Plain View
-    $c->forward('MyApp::View::Download::Plain');
+    # Finally forward processing to the HTML View
+    $c->forward('MyApp::View::Download::HTML');
   }
 	
 =head1 DESCRIPTION
 
-Takes content and outputs the content as plain text.
+Takes content and outputs the content as html text.
 
 =head1 SUBROUTINES
 
@@ -88,7 +88,7 @@ Allows others to use this view for much more fine-grained content generation.
 
 Determines the key in the stash this view will look for when attempting to retrieve content to process. If this key isn't found it will then look at $c->response->body for content. Content when passed via the stash must be passed in a hashref in the key labeled 'data'
 
-  $c->view('MyApp::View::Download::Plain')->config->{'stash_key'} = 'content';
+  $c->view('MyApp::View::Download::HTML')->config->{'stash_key'} = 'content';
 
 =back
 

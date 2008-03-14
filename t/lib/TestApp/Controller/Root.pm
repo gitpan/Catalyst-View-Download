@@ -9,6 +9,7 @@ use base 'Catalyst::Controller';
 use Text::CSV;
 use TestApp::View::Download::CSV;
 use TestApp::View::Download::Plain;
+use TestApp::View::Download::HTML;
 
 # your actions replace this one
 sub main :Path { $_[1]->res->body('<h1>It works</h1>') }
@@ -23,6 +24,20 @@ sub csv_test : Global {
   };
 
   my $view = new TestApp::View::Download::CSV;
+
+  $c->res->body(''.$view->render($c,'',$c->stash));
+}
+
+sub html_test : Global {
+  my ($self, $c) = @_;
+
+  my $data = $self->_generate_plain_test_data();
+
+  $c->stash->{'html'} = {
+    data => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head><title></title></head><body>'.$data.'</body></html>'
+  };
+
+  my $view = new TestApp::View::Download::HTML;
 
   $c->res->body(''.$view->render($c,'',$c->stash));
 }

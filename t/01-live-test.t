@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # setup library path
 use FindBin qw($Bin);
@@ -24,6 +24,10 @@ my $compare = "a,b,c,d\n"
              ."\@,\",\",\"\"\"\",'\n";
 $mech->get_ok('http://localhost/csv_test/','csv test');
 $mech->content_is($compare, 'is this the csv result we are looking for?');
+
+# Test of Catalyst::View::Download and Catalyst::View::Download::HTML
+$mech->get_ok('http://localhost/html_test/', 'html test');
+$mech->content_like(qr/\<\/head\>\<body\>Lorem ipsum dolor sit amet/i, 'is this the html text result we are looking for?');
 
 # Test of Catalyst::View::Download and Catalyst::View::Download::Plain
 $mech->get_ok('http://localhost/plain_test/', 'plain test');
