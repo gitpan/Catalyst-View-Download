@@ -11,62 +11,78 @@ use Text::CSV;
 
 Catalyst::View::Download::CSV
 
+=head1 VERSION
+
+0.02
+
 =cut
 
+our $VERSION = "0.02";
+
 __PACKAGE__->config(
-	'stash_key' => 'csv',
-	'quote_char' => '"',
-	'escape_char' => '"',
-	'sep_char' => ',',
-	'eol' => "\n",
+    'stash_key'   => 'csv',
+    'quote_char'  => '"',
+    'escape_char' => '"',
+    'sep_char'    => ',',
+    'eol'         => "\n",
 );
 
 sub process {
-	my $self = shift;
-	my ($c) = @_;
+    my $self = shift;
+    my ($c) = @_;
 
-  my $template = $c->stash->{template};
-  my $content = $self->render($c, $template, $c->stash);
+    my $template = $c->stash->{template};
+    my $content = $self->render( $c, $template, $c->stash );
 
-  $c->res->headers->header("Content-Type" => "text/csv") if($c->res->headers->header("Content-Type") eq "");
-  $c->res->body( $content );
+    $c->res->headers->header( "Content-Type" => "text/csv" )
+      unless ( $c->res->headers->header("Content-Type") );
+    $c->res->body($content);
 }
 
 sub render {
-	my $self = shift;
-	my ($c,  $template, $args) = @_;
+    my $self = shift;
+    my ( $c, $template, $args ) = @_;
 
-  my $content;
-	
-	my @data;
-	
-	my $stash_key = $self->config->{'stash_key'};
-	
-  if(defined($args->{$stash_key}) && ref($args->{$stash_key}) =~ /HASH/ && defined($args->{$stash_key}{data}) && $args->{$stash_key}{data} =~ /ARRAY/) {
-	  push(@data, @{$args->{$stash_key}{data}});
-  }
-  else {
-	  return $content;	
-  }
-	
-	my $csv = Text::CSV->new ({
-     quote_char          => $self->config->{'quote_char'},
-     escape_char         => $self->config->{'escape_char'},
-     sep_char            => $self->config->{'sep_char'},
-     eol                 => $self->config->{'eol'},
-     binary              => 1,
-     allow_loose_quotes  => 1,
-     allow_loose_escapes => 1,
-     allow_whitespace    => 1,
-  });
-	
-	foreach my $row(@data) {
-		my $status = $csv->combine(@{$row});
-    Catalyst::Exception->throw("Text::CSV->combine Error: ".$csv->error_diag()) if(!$status);
-    $content .= $csv->string();
-	}
+    my $content;
 
-  return $content;
+    my @data;
+
+    my $stash_key = $self->config->{'stash_key'};
+
+    if (   defined( $args->{$stash_key} )
+        && ref( $args->{$stash_key} ) =~ /HASH/
+        && defined( $args->{$stash_key}{data} )
+        && $args->{$stash_key}{data} =~ /ARRAY/ )
+    {
+        push( @data, @{ $args->{$stash_key}{data} } );
+    }
+    else {
+        return $content;
+    }
+
+    my $csv = Text::CSV->new(
+        {
+            quote_char          => $self->config->{'quote_char'},
+            escape_char         => $self->config->{'escape_char'},
+            sep_char            => $self->config->{'sep_char'},
+            eol                 => $self->config->{'eol'},
+            binary              => 1,
+            allow_loose_quotes  => 1,
+            allow_loose_escapes => 1,
+            allow_whitespace    => 1,
+            always_quote        => 1
+        }
+    );
+
+    foreach my $row (@data) {
+        my $status = $csv->combine( @{$row} );
+        Catalyst::Exception->throw(
+            "Text::CSV->combine Error: " . $csv->error_diag() )
+          if ( !$status );
+        $content .= $csv->string();
+    }
+
+    return $content;
 }
 
 1;
@@ -91,7 +107,10 @@ __END__
       ['col 1','col 2','col ...','col N']  # row N
     ];
 
-    # To output your data in comma seperated values pass your array by reference into a hashref as the key 'data' and then into whatever stash key you have defined (default is 'csv'). Content passed via the stash must be passed in a hashref in the key labeled 'data'
+    # To output your data in comma seperated values pass your array by reference 
+    # into a hashref as the key 'data' and then into whatever stash key you have 
+    # defined (default is 'csv'). Content passed via the stash must be passed in 
+    # a hashref in the key labeled 'data'.
     $c->stash->{'csv'} = {
 			'data' => $data
 		};

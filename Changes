@@ -1,5 +1,11 @@
 Revision history for Catalyst-View-Download
 
+0.05    September 5,2009
+        Encorporated a fix to Catalyst::View::Download::CSV submitted by Kevin Frost which prevents a warning in process().
+        Encorporated a change to Catalyst::View::Download::CSV submitted by Michele Beltrame such that it will always quote each field in the document.
+        Cleaned up POD code snippets and used perltidy on everything. Thanks for the tips Kevin!
+        Added another supported format, xml. Which will either support content as a string or convert a hashref into an xml document using XML::Simple.
+
 0.04    March 14, 2008
         Added Catalyst::Download::HTML. Fixed some typos in the POD documentation.
 

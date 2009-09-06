@@ -10,62 +10,67 @@ Catalyst::View::Download
 
 =head1 VERSION
 
-Version 0.04
+0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = "0.05";
 
 __PACKAGE__->config(
-	'stash_key' => 'download',
-	'default' => 'text/plain',
-	'content_type' => {
-		'text/csv' => {
-			'outfile'	=> 'data.csv',
-			'module' => '+Download::CSV',
-		},
-		'text/html' => {
-			'outfile' => 'data.html',
-			'module' => '+Download::HTML',
-		},
-		'text/plain' => {
-			'outfile' => 'data.txt',
-			'module' => '+Download::Plain',
-		},
-	},
+    'stash_key'    => 'download',
+    'default'      => 'text/plain',
+    'content_type' => {
+        'text/csv' => {
+            'outfile' => 'data.csv',
+            'module'  => '+Download::CSV',
+        },
+        'text/html' => {
+            'outfile' => 'data.html',
+            'module'  => '+Download::HTML',
+        },
+        'text/plain' => {
+            'outfile' => 'data.txt',
+            'module'  => '+Download::Plain',
+        },
+    },
 );
 
 sub process {
-	my $self = shift;
-	my ($c) = @_;
-	
-	my $content = $self->render($c, $c->stash->{template}, $c->stash);
-	
-	$c->response->body($content);
+    my $self = shift;
+    my ($c) = @_;
+
+    my $content = $self->render( $c, $c->stash->{template}, $c->stash );
+
+    $c->response->body($content);
 }
 
 sub render {
-	my $self = shift;
-	my ($c, $template, $args) = @_;
-	my $content;
-	
-	my $content_type = $args->{$self->config->{'stash_key'}} || $c->response->header('Content-Type') || $self->config->{'default'};
-	my $options = $self->config->{'content_type'}{$content_type} || return $c->response->body;
-	
-	my $module = $options->{'module'} || return $c->response->body;
-	if($module =~ /^\+(.*)$/) {
-		$module = 'Catalyst::View::'.$1;
-	}
-	
-	$c->response->header('Content-Type' => $content_type);
-	$c->response->header('Content-Disposition' => 'attachment; filename='.$options->{'outfile'});
-	
-	Catalyst::Utils::ensure_class_loaded($module);
-	my $view = new $module;
-	
-	$content = $view->render(@_);
-	
-	return $content;
+    my $self = shift;
+    my ( $c, $template, $args ) = @_;
+    my $content;
+
+    my $content_type =
+         $args->{ $self->config->{'stash_key'} }
+      || $c->response->header('Content-Type')
+      || $self->config->{'default'};
+    my $options = $self->config->{'content_type'}{$content_type}
+      || return $c->response->body;
+
+    my $module = $options->{'module'} || return $c->response->body;
+    if ( $module =~ /^\+(.*)$/ ) {
+        $module = 'Catalyst::View::' . $1;
+    }
+
+    $c->response->header( 'Content-Type' => $content_type );
+    $c->response->header( 'Content-Disposition' => 'attachment; filename='
+          . $options->{'outfile'} );
+
+    Catalyst::Utils::ensure_class_loaded($module);
+    my $view = new $module;
+
+    $content = $view->render(@_);
+
+    return $content;
 }
 
 1;
@@ -82,10 +87,16 @@ __END__
 	sub example_action_1 : Local {
 		my ($self, $c) = @_;
 
-		my $content_type = $c->request->params->{'content_type'} || 'plain'; # 'plain', 'csv' or 'html'
+    # 'plain', 'csv', 'html', or 'xml'
+		my $content_type = $c->request->params->{'content_type'} || 'plain'; 
+    
+    # Set the content type so Catalyst::View::Download can determine how 
+    # to process it.
+		$c->header('Content-Type' => 'text/'.$content_type); 
 
-		$c->header('Content-Type' => 'text/'.$content_type); # Set the content type so Catalyst::View::Download can determine how to process it.
-    $c->stash->{'download'} = 'text/'.$content_type; # Or set the content type in the stash variable 'download' (note this is configurable) to process it.
+    # Or set the content type in the stash variable 'download' 
+    # to process it. (Note: this is configurable)
+    $c->stash->{'download'} = 'text/'.$content_type; 
 
 		# Array reference of array references.
 		my $data = [
@@ -95,21 +106,27 @@ __END__
 			['col 1','col 2','col ...','col N']  # row N
 		];
 
-		# If the chosen content_type is 'csv' then the render function of Catalyst::View::Download::CSV will be called which uses the 'csv' stash key
+		# If the chosen content_type is 'csv' then the render function of 
+    # Catalyst::View::Download::CSV will be called which uses the 'csv' 
+    # stash key
 		$c->stash->{'csv'} = {
       data => $data
     };
 
 		use Data::Dumper;
 
-		# For html text in this example we just dump the example array in a basic html document
-		# Catalyst::View::Download::HTML can use either the 'html' stash key or just pull from $c->response->body
+		# For html text in this example we just dump the example array in a basic
+    # html document. Catalyst::View::Download::HTML can use either the 'html'
+    # stash key or just pull from $c->response->body
     $c->stash->{'html'} = {
-        data => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head><title></title></head><body>'.Dumper( $data ).'</body></html>';
+        data => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head>
+<title></title></head><body>'.Dumper( $data ).'</body></html>'
     };
     
-		# For plain text in this example we just dump the example array
-		# Catalyst::View::Download::Plain can use either the 'plain' stash key or just pull from $c->response->body
+		# For plain text in this example we just dump the example array.
+		# Catalyst::View::Download::Plain can use either the 'plain'
+    # stash key or just pull from $c->response->body.
     $c->stash->{'plain'} = {
       data => Dumper( $data )
     };
@@ -163,9 +180,15 @@ The Content-Type key refers to it's own hash of parameters to determine the acti
 
 'module' - The name of the module that will handle data output. If there is a plus symbol '+' at the beginning of the module name, this will indicate that the module is a Catalyst::View module will will add 'Catalyst::View::' to the beginning of the module name.
 
-	$c->view('MyApp::View::Download')->config->{'content_type'}{'text/csv'}{'module'} = '+Download::CSV'; # Module Loaded: Catalyst::View::Download::CSV
+  # Module Loaded: Catalyst::View::Download::CSV
+	$c->view('MyApp::View::Download')
+    ->config
+    ->{'content_type'}{'text/csv'}{'module'} = '+Download::CSV'; 
 
-	$c->view('MyApp::View::Download')->config->{'content_type'}{'text/csv'}{'module'} = 'My::Module::CSV'; # Module Loaded: My::Module::CSV
+  # Module Loaded: My::Module::CSV
+	$c->view('MyApp::View::Download')
+    ->config
+    ->{'content_type'}{'text/csv'}{'module'} = 'My::Module::CSV'; 
 
 =back
 
@@ -247,6 +270,10 @@ Thanks to following people for their constructive comments and help:
 =item Jonathan Rockway
 
 =item Jon Schutz
+
+=item Kevin Frost
+
+=item Michele Beltrame
 
 =back
 

@@ -8,34 +8,39 @@ use base qw( Catalyst::View );
 
 Catalyst::View::Download::HTML
 
+=head1 VERSION
+
+0.02
+
 =cut
 
-__PACKAGE__->config(
-	'stash_key' => 'html'
-);
+our $VERSION = "0.02";
+
+__PACKAGE__->config( 'stash_key' => 'html' );
 
 sub process {
-	my $self = shift;
-	my ($c) = @_;
+    my $self = shift;
+    my ($c) = @_;
 
-  my $template = $c->stash->{template};
-  my $content = $self->render($c, $template, $c->stash);
+    my $template = $c->stash->{template};
+    my $content = $self->render( $c, $template, $c->stash );
 
-  $c->res->headers->header("Content-Type" => "text/html") if($c->res->headers->header("Content-Type") eq "");
-  $c->res->body( $content );
+    $c->res->headers->header( "Content-Type" => "text/html" )
+      if ( $c->res->headers->header("Content-Type") eq "" );
+    $c->res->body($content);
 }
 
 sub render {
-	my $self = shift;
-	my ($c,  $template, $args) = @_;
+    my $self = shift;
+    my ( $c, $template, $args ) = @_;
 
-  my $content;
-	
-	my $stash_key = $self->config->{'stash_key'};
-	
-	$content = $c->stash->{$stash_key}{'data'} || $c->response->body;
-	
-  return $content;
+    my $content;
+
+    my $stash_key = $self->config->{'stash_key'};
+
+    $content = $c->stash->{$stash_key}{'data'} || $c->response->body;
+
+    return $content;
 }
 
 1;

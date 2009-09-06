@@ -7,6 +7,7 @@ build_requires 'Catalyst::Runtime';
 build_requires 'Test::WWW::Mechanize::Catalyst';
 build_requires 'Test::More';
 build_requires 'Text::CSV';
+build_requires 'XML::Simple';
 build_requires 'FindBin';
 build_requires 'ok';
 

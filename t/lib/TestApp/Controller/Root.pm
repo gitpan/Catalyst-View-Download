@@ -2,7 +2,7 @@ package TestApp::Controller::Root;
 use strict;
 use warnings;
 
-__PACKAGE__->config(namespace => q{});
+__PACKAGE__->config( namespace => q{} );
 
 use base 'Catalyst::Controller';
 
@@ -12,86 +12,79 @@ use TestApp::View::Download::Plain;
 use TestApp::View::Download::HTML;
 
 # your actions replace this one
-sub main :Path { $_[1]->res->body('<h1>It works</h1>') }
+sub main : Path {
+    $_[1]->res->body('<h1>It works</h1>');
+}
 
 sub csv_test : Global {
-  my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-  my $data = $self->_generate_csv_test_data();
+    my @data = $self->_generate_test_data();
 
-  $c->stash->{'csv'} = {
-    data => $data->{'array'}
-  };
+    $c->stash->{'csv'} = { data => \@data };
 
-  my $view = new TestApp::View::Download::CSV;
+    my $view = new TestApp::View::Download::CSV;
 
-  $c->res->body(''.$view->render($c,'',$c->stash));
+    $c->res->body( '' . $view->render( $c, '', $c->stash ) );
 }
 
 sub html_test : Global {
-  my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-  my $data = $self->_generate_plain_test_data();
+    my $data = $self->_generate_test_data();
 
-  $c->stash->{'html'} = {
-    data => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head><title></title></head><body>'.$data.'</body></html>'
-  };
+    $c->stash->{'html'} =
+      { data =>
+'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head><title></title></head><body>'
+          . $data
+          . '</body></html>' };
 
-  my $view = new TestApp::View::Download::HTML;
+    my $view = new TestApp::View::Download::HTML;
 
-  $c->res->body(''.$view->render($c,'',$c->stash));
+    $c->res->body( '' . $view->render( $c, '', $c->stash ) );
+}
+
+sub xml_test : Global {
+    my ( $self, $c ) = @_;
+
+    my $data = $self->_generate_test_data();
+
+    $c->stash->{'xml'} = { data => { 'root' => { 'text' => [ $data ] } } };
+
+    my $view = new TestApp::View::Download::XML;
+
+    $c->res->body( '' . $view->render( $c, '', $c->stash ) );
 }
 
 sub plain_test : Global {
-  my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-  my $data = $self->_generate_plain_test_data();
+    my $data = $self->_generate_test_data();
 
-  $c->stash->{'plain'} = {
-    data => $data
-  };
+    $c->stash->{'plain'} = { data => $data };
 
-  my $view = new TestApp::View::Download::Plain;
+    my $view = new TestApp::View::Download::Plain;
 
-  $c->res->body(''.$view->render($c,'',$c->stash));
+    $c->res->body( '' . $view->render( $c, '', $c->stash ) );
 }
 
-sub _generate_csv_test_data {
-  my ($self, $c) = @_;
+sub _generate_test_data {
+    my ( $self, $c ) = @_;
 
-  my $data = {
-    'array' => [
-      ['a','b','c','d'],
-      ['1','2','3','4'],
-      [' ',"\n","\t",'!'],
-      ['@',',','"',"'"]
-    ],
-    'content' => '',
-  };
+    my $data;
 
-  my $csv = Text::CSV->new ({
-     quote_char          => '"',
-     escape_char         => '"',
-     sep_char            => ',',
-     eol                 => "\n",
-     binary              => 1,
-     allow_loose_quotes  => 1,
-     allow_loose_escapes => 1,
-     allow_whitespace    => 1,
-  });
+    if ( wantarray() ) {
+        $data = [
+            [ 'a', 'b',  'c',  'd' ],
+            [ '1', '2',  '3',  '4' ],
+            [ ' ', "\n", "\t", '!' ],
+            [ '@', ',',  '"',  "'" ]
+        ];
 
-  foreach my $row(@{$data->{'array'}}) {
-    $csv->combine(@{$row});
-    $data->{'content'} .= $csv->string();
-  }
-
-  return $data;
-}
-
-sub _generate_plain_test_data {
-  my ($self, $c) = @_;
-
-  my $content =<<"TEST";
+        return @{$data};
+    }
+    else {
+        $data = <<"TEST";
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vestibulum tempus augue interdum neque. Curabitur ac libero. Aliquam faucibus mi a lectus. Sed et elit. Etiam volutpat suscipit quam. Phasellus sit am
 et odio. Sed faucibus magna quis diam. Nulla facilisi. Vivamus id erat porttitor elit aliquam ornare. Integer tincidunt varius lacus. Pellentesque sit amet mauris id ligula faucibus semper. Maecenas eros. Cur
 abitur hendrerit ligula ac nulla. Mauris dolor eros, pellentesque vel, varius porttitor, convallis non, lectus.
@@ -106,8 +99,8 @@ a rutrum nibh et justo. Suspendisse dolor libero, rhoncus a, pretium id, feugiat
 s. Aenean iaculis felis nec ipsum. Aliquam tristique. Nam ut quam. Suspendisse ornare tristique arcu. Morbi pellentesque dolor eget lorem. Morbi ac nunc euismod lorem porttitor hendrerit. Lorem ipsum dolor si
 t amet, consectetuer adipiscing elit.
 TEST
-
-  return $content;
+        return $data;
+    }
 }
 
 1;
