@@ -1,5 +1,8 @@
 Revision history for Catalyst-View-Download
 
+0.06    September 5,2009
+        Encorporated a fix to Catalyst::View::Download which was missing support for the new module Catalyst::View::Download::XML
+
 0.05    September 5,2009
         Encorporated a fix to Catalyst::View::Download::CSV submitted by Kevin Frost which prevents a warning in process().
         Encorporated a change to Catalyst::View::Download::CSV submitted by Michele Beltrame such that it will always quote each field in the document.

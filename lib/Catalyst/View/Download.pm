@@ -10,11 +10,11 @@ Catalyst::View::Download
 
 =head1 VERSION
 
-0.05
+0.06
 
 =cut
 
-our $VERSION = "0.05";
+our $VERSION = "0.06";
 
 __PACKAGE__->config(
     'stash_key'    => 'download',
@@ -31,6 +31,10 @@ __PACKAGE__->config(
         'text/plain' => {
             'outfile' => 'data.txt',
             'module'  => '+Download::Plain',
+        },
+        'text/xml' => {
+            'outfile' => 'data.xml',
+            'module'  => '+Download::XML',
         },
     },
 );
@@ -248,6 +252,17 @@ Catalyst::View::Download has the following default configuration for this Conten
 	};
 	
 See L<Catalyst::View::Download::Plain> for more details.
+
+=head2 text/xml
+
+Catalyst::View::Download has the following default configuration for this Content-Type
+
+  $c->view('MyApp::View::Download')->config->{'content_type'}{'text/xml'} = {
+    'outfile' => 'data.xml',
+    'module' => '+Download::XML'
+  };
+  
+See L<Catalyst::View::Download::XML> for more details.
 
 =head1 BUGS
 
