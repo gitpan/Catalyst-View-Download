@@ -13,18 +13,23 @@ Catalyst::View::Download::CSV
 
 =head1 VERSION
 
-0.02
+0.03
 
 =cut
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 __PACKAGE__->config(
-    'stash_key'   => 'csv',
-    'quote_char'  => '"',
-    'escape_char' => '"',
-    'sep_char'    => ',',
-    'eol'         => "\n",
+    'stash_key'             => 'csv',
+    'quote_char'            => '"',
+    'escape_char'           => '"',
+    'sep_char'              => ',',
+    'eol'                   => "\n",
+    'binary'                => 1,
+    'allow_loose_quotes'    => 1,
+    'allow_loose_escapes'   => 1,
+    'allow_whitespace'      => 1,
+    'always_quote'          => 1
 );
 
 sub process {
@@ -66,16 +71,16 @@ sub render {
             escape_char         => $self->config->{'escape_char'},
             sep_char            => $self->config->{'sep_char'},
             eol                 => $self->config->{'eol'},
-            binary              => 1,
-            allow_loose_quotes  => 1,
-            allow_loose_escapes => 1,
-            allow_whitespace    => 1,
-            always_quote        => 1
+            binary              => $self->config->{'binary'},
+            allow_loose_quotes  => $self->config->{'allow_loose_quotes'},
+            allow_loose_escapes => $self->config->{'allow_loose_escapes'},
+            allow_whitespace    => $self->config->{'allow_whitespace'},
+            always_quote        => $self->config->{'always_quote'}
         }
     );
 
-    foreach my $row (@data) {
-        my $status = $csv->combine( @{$row} );
+    foreach my $row ( @data ) {
+        my $status = $csv->combine( @{ $row } );
         Catalyst::Exception->throw(
             "Text::CSV->combine Error: " . $csv->error_diag() )
           if ( !$status );
@@ -158,12 +163,17 @@ __END__
     # You can change any of the aspects of a delimiter seperated values format by change the view configuration
     # This is an example of tab seperated values for instance
 
-		$c->view('MyApp::View::Download')->config(
+		$c->view('Download')->config(
 			'stash_key' => 'data',
 			'quote_char' => '"',
 			'escape_char' => '"',
 			'sep_char' => "\t",
 			'eol' => "\n",
+      'binary' => 1,
+      'allow_loose_quotes' => 1,
+      'allow_loose_escapes' => 1,
+      'allow_whitespace' => 1,
+      'always_quote' => 1
 		);
 
     $c->stash->{'data'} = {
@@ -233,7 +243,7 @@ L<Catalyst> L<Catalyst::View> L<Catalyst::View::Download> L<Text::CSV>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Travis Chase.
+Copyright 2011 Travis Chase.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

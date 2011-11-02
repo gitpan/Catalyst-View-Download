@@ -10,24 +10,24 @@ Catalyst::View::Download::HTML
 
 =head1 VERSION
 
-0.02
+0.03
 
 =cut
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 __PACKAGE__->config( 'stash_key' => 'html' );
 
 sub process {
     my $self = shift;
-    my ($c) = @_;
+    my ( $c ) = @_;
 
-    my $template = $c->stash->{template};
+    my $template = $c->stash->{ 'template' };
     my $content = $self->render( $c, $template, $c->stash );
 
     $c->res->headers->header( "Content-Type" => "text/html" )
-      if ( $c->res->headers->header("Content-Type") eq "" );
-    $c->res->body($content);
+      if ( $c->res->headers->header( "Content-Type" ) eq "" );
+    $c->res->body( $content );
 }
 
 sub render {
@@ -36,9 +36,9 @@ sub render {
 
     my $content;
 
-    my $stash_key = $self->config->{'stash_key'};
+    my $stash_key = $self->config->{ 'stash_key' };
 
-    $content = $c->stash->{$stash_key}{'data'} || $c->response->body;
+    $content = $c->stash->{ $stash_key }{ 'data' } || $c->response->body;
 
     return $content;
 }
@@ -107,7 +107,7 @@ L<Catalyst> L<Catalyst::View> L<Catalyst::View::Download>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Travis Chase.
+Copyright 2011 Travis Chase.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

@@ -12,11 +12,11 @@ Catalyst::View::Download::XML
 
 =head1 VERSION
 
-0.01
+0.02
 
 =cut
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 __PACKAGE__->config( 'stash_key' => 'xml' );
 
@@ -24,12 +24,12 @@ sub process {
     my $self = shift;
     my ($c) = @_;
 
-    my $template = $c->stash->{template};
+    my $template = $c->stash->{ 'template' };
     my $content = $self->render( $c, $template, $c->stash );
 
     $c->res->headers->header( "Content-Type" => "text/xml" )
       if ( $c->res->headers->header("Content-Type") eq "" );
-    $c->res->body($content);
+    $c->res->body( $content );
 }
 
 sub render {
@@ -38,13 +38,13 @@ sub render {
 
     my $content;
 
-    my $stash_key = $self->config->{'stash_key'};
+    my $stash_key = $self->config->{ 'stash_key' };
 
-    $content = $c->stash->{$stash_key}{'data'} || $c->response->body;
+    $content = $c->stash->{ $stash_key }{ 'data' } || $c->response->body;
 
     if(ref($content) =~ /HASH/) {
-      my $xs = new XML::Simple(keeproot => 1, XMLDecl => "<?xml version='1.0' ?>");
-      $content = $xs->XMLout($content);
+      my $xs = new XML::Simple( keeproot => 1, XMLDecl => "<?xml version='1.0' ?>" );
+      $content = $xs->XMLout( $content );
     }
 
     return $content;
@@ -134,7 +134,7 @@ L<Catalyst> L<Catalyst::View> L<Catalyst::View::Download> L<XML::Simple>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Travis Chase.
+Copyright 2011 Travis Chase.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

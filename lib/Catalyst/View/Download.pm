@@ -1,8 +1,9 @@
 package Catalyst::View::Download;
 
-use strict;
-use warnings;
-use base qw( Catalyst::View );
+use Moose;
+use namespace::autoclean;
+
+extends 'Catalyst::View';
 
 =head1 NAME
 
@@ -10,11 +11,11 @@ Catalyst::View::Download
 
 =head1 VERSION
 
-0.06
+0.07
 
 =cut
 
-our $VERSION = "0.06";
+our $VERSION = "0.07";
 
 __PACKAGE__->config(
     'stash_key'    => 'download',
@@ -290,13 +291,15 @@ Thanks to following people for their constructive comments and help:
 
 =item Michele Beltrame
 
+=item Dave Lambley
+
 =back
 
 Thanks also to my company Ti4 Technologies for their financial support. L<http://www.ti4tech.com/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Travis Chase.
+Copyright 2011 Travis Chase.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
