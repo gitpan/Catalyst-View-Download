@@ -13,11 +13,11 @@ Catalyst::View::Download::CSV
 
 =head1 VERSION
 
-0.03
+0.04
 
 =cut
 
-our $VERSION = "0.03";
+our $VERSION = "0.04";
 
 __PACKAGE__->config(
     'stash_key'             => 'csv',
@@ -48,22 +48,8 @@ sub render {
     my $self = shift;
     my ( $c, $template, $args ) = @_;
 
-    my $content;
-
-    my @data;
-
     my $stash_key = $self->config->{'stash_key'};
-
-    if (   defined( $args->{$stash_key} )
-        && ref( $args->{$stash_key} ) =~ /HASH/
-        && defined( $args->{$stash_key}{data} )
-        && $args->{$stash_key}{data} =~ /ARRAY/ )
-    {
-        push( @data, @{ $args->{$stash_key}{data} } );
-    }
-    else {
-        return $content;
-    }
+    return '' unless $args->{$stash_key} && ref($args->{$stash_key}) =~ /ARRAY/;
 
     my $csv = Text::CSV->new(
         {
@@ -79,7 +65,8 @@ sub render {
         }
     );
 
-    foreach my $row ( @data ) {
+    my $content;
+    foreach my $row ( @{ $args->{$stash_key} } ) {
         my $status = $csv->combine( @{ $row } );
         Catalyst::Exception->throw(
             "Text::CSV->combine Error: " . $csv->error_diag() )
@@ -95,93 +82,31 @@ __END__
 
 =head1 SYNOPSIS
 
-  # lib/MyApp/View/Download/CSV.pm
-  package MyApp::View::Download::CSV;
-  use base qw( Catalyst::View::Download::CSV );
-  1;
+    # lib/MyApp/View/Download/CSV.pm
+    package MyApp::View::Download::CSV;
+    use base qw( Catalyst::View::Download::CSV );
+    1;
 
-  # lib/MyApp/Controller/SomeController.pm
-  sub example_action_1 : Local {
-    my ($self, $c) = @_;
-  
-    # Array reference of array references.
-    my $data = [
-      ['col 1','col 2','col ...','col N'], # row 1
-      ['col 1','col 2','col ...','col N'], # row 2
-      ['col 1','col 2','col ...','col N'], # row ...
-      ['col 1','col 2','col ...','col N']  # row N
-    ];
+    # lib/MyApp/Controller/SomeController.pm
+    sub example_action_1 : Local {
+        my ($self, $c) = @_;
 
-    # To output your data in comma seperated values pass your array by reference 
-    # into a hashref as the key 'data' and then into whatever stash key you have 
-    # defined (default is 'csv'). Content passed via the stash must be passed in 
-    # a hashref in the key labeled 'data'.
-    $c->stash->{'csv'} = {
-			'data' => $data
-		};
+        # Array reference of array references.
+        my $data = [
+          ['col 1','col 2','col ...','col N'], # row 1
+          ['col 1','col 2','col ...','col N'], # row 2
+          ['col 1','col 2','col ...','col N'], # row ...
+          ['col 1','col 2','col ...','col N']  # row N
+        ];
 
-    # Finally forward processing to the CSV View
-    $c->forward('MyApp::View::Download::CSV');
-  }
+        # To output your data in comma seperated values pass your array by reference
+        # into hatever stash key you have defined (default is 'csv'). Content passed
+        # via the stash must be passed in a hashref in the key labeled 'data'.
+        $c->stash->{'csv'} = $data;
 
-  # Other ways of storing data
-  sub example_action_2 : Local {
-    my ($self, $c) = @_;
-
-    # Array of array references
-    my @data;
-
-    push(@data,['col 1','col 2','col ...','col N']); # row 1
-    push(@data,['col 1','col 2','col ...','col N']); # row 2
-    push(@data,['col 1','col 2','col ...','col N']); # row ...
-    push(@data,['col 1','col 2','col ...','col N']); # row N
-
-    # OR to produce a single column of data you can simply do the following 
-    my @data = (
-                'col 1 row 1',
-                'col 1 row 2',
-                'col 1 row ...',
-                'col 1 row N'
-               );
-
-    $c->stash->{'csv'} = {
-			'data' => \@data
-		};
-
-    $c->forward('MyApp::View::Download::CSV');
-  }
-
-  # Available Options to produce other types of delimiter seperated output
-  sub  example_action_3 : Local {
-    my ($self, $c) = @_;
-
-    my $data = [
-      ['col 1','col 2','col ...','col N'], # row 1
-      ['col 1','col 2','col ...','col N'] # row 2
-    ];
-
-    # You can change any of the aspects of a delimiter seperated values format by change the view configuration
-    # This is an example of tab seperated values for instance
-
-		$c->view('Download')->config(
-			'stash_key' => 'data',
-			'quote_char' => '"',
-			'escape_char' => '"',
-			'sep_char' => "\t",
-			'eol' => "\n",
-      'binary' => 1,
-      'allow_loose_quotes' => 1,
-      'allow_loose_escapes' => 1,
-      'allow_whitespace' => 1,
-      'always_quote' => 1
-		);
-
-    $c->stash->{'data'} = {
-			'data' => $data
-		};
-		
-		$c->forward('MyApp::View::Download::CSV');
-  }
+        # Finally forward processing to the CSV View
+        $c->forward('MyApp::View::Download::CSV');
+    }
 
 =head1 DESCRIPTION
 
@@ -191,7 +116,8 @@ Takes a nested array and outputs CSV formatted content.
 
 =head2 process
 
-This method will be called by Catalyst if it is asked to forward to a component without a specified action.
+This method will be called by Catalyst if it is asked to forward to a component
+without a specified action.
 
 =head2 render
 
@@ -203,13 +129,18 @@ Allows others to use this view for much more fine-grained content generation.
 
 =item stash_key
 
-Determines the key in the stash this view will look for when attempting to retrieve data to process. If this key isn't found it will then look at the stash as a whole, find any array references and process them. Data passed into the defined stash_key must be a HASHREF with at least the key 'data' existing with the nested array of data to create a CSV from.
+Determines the key in the stash this view will look for when attempting to
+retrieve data to process. If this key isn't found it will then look at the
+stash as a whole, find any array references and process them. Data passed into
+the defined stash_key must be a HASHREF with at least the key 'data' existing
+with the nested array of data to create a CSV from.
 
 	$c->view('MyApp::View::Download::CSV')->config->{'stash_key'} = 'data';
 
 =item quote_char
 
-Determines what value will be enclosed within if it contains whitespace or the delimiter character. DEFAULT: '"'
+Determines what value will be enclosed within if it contains whitespace or the
+delimiter character. DEFAULT: '"'
 
   $c->view('MyApp::View::Download::CSV')->config->{'quote_char'} = '/';
 
@@ -235,17 +166,15 @@ Any characters defined in eol will be placed at the end of a row. DEFAULT: '\n'
 
 =head1 AUTHOR
 
-Travis Chase, C<< <gaudeon at cpan.org> >>
+Travis Chase, C<< <gaudeon at cpan dot org> >>
 
 =head1 SEE ALSO
 
 L<Catalyst> L<Catalyst::View> L<Catalyst::View::Download> L<Text::CSV>
 
-=head1 COPYRIGHT & LICENSE
+=head1 LICENSE
 
-Copyright 2011 Travis Chase.
-
-This program is free software; you can redistribute it and/or modify it
+This program is free software. You can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut

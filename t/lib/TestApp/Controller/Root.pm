@@ -21,7 +21,7 @@ sub csv_test : Global {
 
     my @data = $self->_generate_test_data();
 
-    $c->stash->{'csv'} = { data => \@data };
+    $c->stash->{'csv'} = \@data;
 
     my $view = new TestApp::View::Download::CSV;
 
@@ -34,10 +34,9 @@ sub html_test : Global {
     my $data = $self->_generate_test_data();
 
     $c->stash->{'html'} =
-      { data =>
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html><head><title></title></head><body>'
           . $data
-          . '</body></html>' };
+          . '</body></html>';
 
     my $view = new TestApp::View::Download::HTML;
 
@@ -49,7 +48,7 @@ sub xml_test : Global {
 
     my $data = $self->_generate_test_data();
 
-    $c->stash->{'xml'} = { data => { 'root' => { 'text' => [ $data ] } } };
+    $c->stash->{'xml'} = { 'root' => { 'text' => [ $data ] } };
 
     my $view = new TestApp::View::Download::XML;
 
@@ -61,7 +60,7 @@ sub plain_test : Global {
 
     my $data = $self->_generate_test_data();
 
-    $c->stash->{'plain'} = { data => $data };
+    $c->stash->{'plain'} = $data;
 
     my $view = new TestApp::View::Download::Plain;
 
