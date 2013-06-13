@@ -11,11 +11,11 @@ Catalyst::View::Download
 
 =head1 VERSION
 
-0.08
+0.09
 
 =cut
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 $VERSION = eval $VERSION;
 
 __PACKAGE__->config(
@@ -100,7 +100,10 @@ sub render {
     return $view->render( @_ );
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
+
 __END__
 
 =head1 SYNOPSIS
@@ -164,7 +167,8 @@ __END__
             # 'csv' for csv, 'html' for html, etc.
             $c->stash->{$content_type} = $format->{$content_type}();
 
-            # You can optionally set the outfile_name or the current action name will be used
+            # You can optionally set the outfile_name or the current action name
+            # will be used
             $c->stash->{'outfile_name'} = 'filename';
 
             # Use the Download View
@@ -216,8 +220,8 @@ A hash ref of hash refs. Each key in content_type is Content-Type that is
 handled by this view.
 
     $c->view('MyApp::View::Download')->config->{'content_type'}{'text/csv'} = {
-        outfile => 'somefile.csv',
-        module  => 'My::Module'
+        outfile_ext => 'csv',
+        module      => 'My::Module'
     };
 
 The Content-Type key refers to it's own hash of parameters to determine the

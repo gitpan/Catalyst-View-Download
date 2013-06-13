@@ -1,5 +1,9 @@
 Revision history for Catalyst::View::Download
 
+0.09    June 13, 2013
+        * Cleaned / Updated pod.
+        * Everything, except helper, now using Moose...
+
 0.08    June 11, 2013
         * Finally added a Helper, yay! 
         * Cleaned / Updated pod.

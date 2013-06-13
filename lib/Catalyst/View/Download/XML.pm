@@ -1,8 +1,9 @@
 package Catalyst::View::Download::XML;
 
-use strict;
-use warnings;
-use base qw( Catalyst::View );
+use Moose;
+use namespace::autoclean;
+
+extends 'Catalyst::View';
 
 use XML::Simple;
 
@@ -12,11 +13,12 @@ Catalyst::View::Download::XML
 
 =head1 VERSION
 
-0.03
+0.04
 
 =cut
 
-our $VERSION = "0.03";
+our $VERSION = "0.04";
+$VERSION = eval $VERSION;
 
 __PACKAGE__->config( 'stash_key' => 'xml' );
 
@@ -47,7 +49,10 @@ sub render {
     return $content;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
+
 __END__
 
 =head1 SYNOPSIS
@@ -64,7 +69,8 @@ __END__
         # supported content can be an xml document
         my $content = "<?xml version="1.0"?>\n<root>\n<text>Some Text\n</text>\n</root>";
 
-        # supported content can also be a hashref which will converted into xml using XMLout from L<XML::Simple>
+        # supported content can also be a hashref which will converted into xml
+        # using XMLout from L<XML::Simple>
         $content = {
             'root' => {
                 'text' => 'Some Text'

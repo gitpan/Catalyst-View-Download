@@ -35,7 +35,7 @@ L<Catalyst::Manual>, L<Catalyst::Helper>, L<Catalyst::View::Download>
 
 =head1 AUTHOR
 
-Travis Chase, C<gaudeon@cpan.org>
+Travis Chase, C<< <gaudeon at cpan dot org> >>
 
 =head1 LICENSE
 

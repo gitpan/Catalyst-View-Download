@@ -1,8 +1,9 @@
 package Catalyst::View::Download::Plain;
 
-use strict;
-use warnings;
-use base qw( Catalyst::View );
+use Moose;
+use namespace::autoclean;
+
+extends 'Catalyst::View';
 
 =head1 NAME
 
@@ -10,11 +11,12 @@ Catalyst::View::Download::Plain
 
 =head1 VERSION
 
-0.04
+0.05
 
 =cut
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
+$VERSION = eval $VERSION;
 
 __PACKAGE__->config( 'stash_key' => 'plain' );
 
@@ -40,7 +42,10 @@ sub render {
     return $content;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
+
 __END__
 
 =head1 SYNOPSIS

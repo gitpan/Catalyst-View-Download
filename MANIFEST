@@ -1,4 +1,5 @@
 .gitignore
+Catalyst-View-Download-0.08.tar.gz
 Changes
 gitignore
 inc/Module/Install.pm
